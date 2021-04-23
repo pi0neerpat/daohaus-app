@@ -108,6 +108,16 @@ export const boostList = [
     modalName: 'nftBank',
     successRoute: '',
   },
+  {
+    name: 'NiftyInk',
+    key: 'niftyInk',
+    description: 'Collect and sell nifty inks',
+    price: '0',
+    modalName: 'niftInkLaunch',
+    successRoute: '',
+    settings: true,
+    // dependency: 'xdai',
+  },
 ];
 
 export const notificationBoostContent = {
@@ -198,5 +208,10 @@ export const superpowerLinks = [
     boostKey: 'snapshot',
     label: 'Snapshot',
     modal: 'snapshot',
+  },
+  {
+    boostKey: 'niftyInk',
+    label: 'Nifty Ink',
+    link: 'settings/nifty-ink',
   },
 ];
