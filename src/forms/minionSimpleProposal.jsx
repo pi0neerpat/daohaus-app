@@ -98,12 +98,15 @@ const MinionProposalForm = () => {
     if (selectedFunction) {
       Object.keys(values).forEach((param) => {
         if (param.indexOf('xparam') > -1) {
-          console.log(param);
-          try {
-            inputValues.push(JSON.parse(values[param]));
-          } catch {
-            inputValues.push(values[param]);
-          }
+          console.log(JSON.parse(values[param]));
+          console.log(values[param]);
+          // TODO: this fails on big numbers
+          // try {
+          //   inputValues.push(JSON.parse(values[param]));
+          // } catch {
+          //   inputValues.push(values[param]);
+          // }
+          inputValues.push(values[param]);
         }
       });
 

@@ -55,7 +55,7 @@ const urlify = (text) => {
 };
 
 const hasImage = (string) => {
-  const imageExtensions = ['.jpg', '.png', '.gif'];
+  const imageExtensions = ['.jpg', '.png', '.gif', '/Qm'];
   return imageExtensions.some((o) => string.includes(o));
 };
 

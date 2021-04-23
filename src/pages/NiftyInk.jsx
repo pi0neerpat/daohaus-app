@@ -208,9 +208,9 @@ const NiftInk = ({ overview }) => {
     });
 
     const details = detailsToJSON({
-      title: 'Minion Sells a Nifty',
+      title: `${minionData.details} Sells a Nifty`,
       description: 'Sell NFT',
-      // link: nftMeta?.image || null,
+      // link: nftImage || null,
       type: 'niftyInk',
     });
     const args = [
@@ -274,10 +274,12 @@ const NiftInk = ({ overview }) => {
     // add type
     // nftMeta
     console.log('nftMeta');
+    const nftImage = nftMeta?.image && nftMeta?.image.replace('https://', '');
+
     const details = detailsToJSON({
-      titlte: 'Minion buys an NFT',
-      description: `${nftMeta?.title} - ${nftMeta?.description}`,
-      link: nftMeta?.image || null,
+      title: `${minionData.details} buys a Nifty`,
+      description: `${nftMeta?.name} - ${nftMeta?.description}`,
+      link: nftImage || null,
       type: 'niftyInk',
     });
     const args = [
