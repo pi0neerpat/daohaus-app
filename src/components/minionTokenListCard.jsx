@@ -8,7 +8,7 @@ import { FaCopy } from 'react-icons/fa';
 import { numberWithCommas } from '../utils/general';
 import MinionNftTile from './minionNftTitle';
 
-const MinionTokenListCard = ({ token, boost }) => {
+const MinionTokenListCard = ({ token, boost, action }) => {
   const toast = useToast();
 
   const copiedToast = () => {
@@ -100,6 +100,7 @@ const MinionTokenListCard = ({ token, boost }) => {
                 tokenId={token.tokenIds[idx]}
                 meta={meta}
                 boost={boost}
+                action={action}
               />
             ))}
         </Flex>

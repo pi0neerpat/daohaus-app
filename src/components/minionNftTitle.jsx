@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Box, Button, Image, Tooltip,
+  Box, Button, Flex, Image, Tooltip,
 } from '@chakra-ui/react';
 import { getNftMeta } from '../utils/metadata';
 
-const MinionNftTile = ({ meta, tokenId, boost }) => {
+const MinionNftTile = ({
+  meta, tokenId, boost, action,
+}) => {
   const [tokenDetail, setTokenDetail] = useState();
 
   useEffect(() => {
@@ -44,9 +46,10 @@ const MinionNftTile = ({ meta, tokenId, boost }) => {
         'NFT'
       )}
       {boost ? (
-        <Box>
-          <Button>Sell</Button>
-        </Box>
+        <Flex>
+          <Button onClick={() => action()}>Sell</Button>
+          <Button onClick={() => action()}>Send</Button>
+        </Flex>
       ) : null}
     </Box>
   );

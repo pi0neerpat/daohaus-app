@@ -157,7 +157,6 @@ export const titleMaker = (proposal) => {
     return details[3];
   } if (details[0][0] === '{') {
     let parsedDetails;
-
     try {
       parsedDetails = IsJsonString(proposal.details)
         ? JSON.parse(proposal.details.replace(/(\r\n|\n|\r)/gm, ''))

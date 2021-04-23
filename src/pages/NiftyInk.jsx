@@ -191,6 +191,73 @@ const NiftInk = ({ overview }) => {
     }
   };
 
+  const sellToken = async (values) => {
+    setNftLoading(true);
+    console.log(values);
+
+    const niftyService = NiftyService({
+      tokenAddress: '0xCF964c89f509a8c0Ac36391c5460dF94B91daba5',
+      chainID: daochain,
+    });
+
+    const priceInWei = injectedProvider.utils.toWei(values.price);
+    console.log('priceInWeipriceInWeipriceInWeipriceInWei', priceInWei);
+    const hexData = await niftyService('setTokenPriceNoop')({
+      tokenId: values.tokenId,
+      price: priceInWei,
+    });
+
+    const details = detailsToJSON({
+      title: 'Minion Sells a Nifty',
+      description: 'Sell NFT',
+      // link: nftMeta?.image || null,
+      type: 'niftyInk',
+    });
+    const args = [
+      '0xCF964c89f509a8c0Ac36391c5460dF94B91daba5',
+      '0',
+      hexData,
+      details,
+    ];
+    try {
+      const poll = createPoll({ action: 'minionProposeAction', cachePoll })({
+        minionAddress: overview.minions[0],
+        createdAt: now,
+        chainID: daochain,
+        actions: {
+          onError: (error, txHash) => {
+            errorToast({
+              title: 'There was an error.',
+            });
+            resolvePoll(txHash);
+            console.error(`Could not find a matching proposal: ${error}`);
+          },
+          onSuccess: (txHash) => {
+            successToast({
+              title: 'Minion proposal submitted.',
+            });
+            refreshDao();
+            resolvePoll(txHash);
+          },
+        },
+      });
+      const onTxHash = () => {
+        setGenericModal(false);
+        setTxInfoModal(true);
+      };
+      await MinionService({
+        web3: injectedProvider,
+        minion,
+        chainID: daochain,
+      })('proposeAction')({
+        args, address, poll, onTxHash,
+      });
+    } catch (err) {
+      setNftLoading(false);
+      console.log('error: ', err);
+    }
+  };
+
   const onSubmit = async (values) => {
     setNftLoading(true);
     console.log('values', values.targetInk.match(/Qm[a-zA-Z0-9]+/));
@@ -203,9 +270,15 @@ const NiftInk = ({ overview }) => {
     const hexData = await niftyService('buyInkNoop')({
       inkUrl: values.targetInk.match(/Qm[a-zA-Z0-9]+/)[0],
     });
-
+    // TODO: add title and link (image)
+    // add type
+    // nftMeta
+    console.log('nftMeta');
     const details = detailsToJSON({
-      description: 'Lets Buy a Nifty',
+      titlte: 'Minion buys an NFT',
+      description: `${nftMeta?.title} - ${nftMeta?.description}`,
+      link: nftMeta?.image || null,
+      type: 'niftyInk',
     });
     const args = [
       '0xCF964c89f509a8c0Ac36391c5460dF94B91daba5',
@@ -329,10 +402,18 @@ const NiftInk = ({ overview }) => {
                       <Flex>View token data on etherscan</Flex>
                     )}
                     {contractBalances && (
-                      <MinionTokenList tokens={contractBalances} boost='NiftyInk' />
+                      <MinionTokenList
+                        tokens={contractBalances}
+                        boost='NiftyInk'
+                        action={() => setGenericModal({ niftySell: true })}
+                      />
                     )}
                   </Box>
-                  <Box><Button onClick={() => setGenericModal({ [minionData.minionAddress]: true })}>Buy Ink</Button></Box>
+                  <Box>
+                    <Button onClick={() => setGenericModal({ [minionData.minionAddress]: true })}>
+                      Buy Ink
+                    </Button>
+                  </Box>
                 </Stack>
               </Box>
             </>
@@ -343,6 +424,40 @@ const NiftInk = ({ overview }) => {
           )}
         </ContentBox>
       </Box>
+      <GenericModal closeOnOverlayClick modalId='niftySell'>
+        <form onSubmit={handleSubmit(sellToken)}>
+          {nftMeta && <Image src={nftMeta?.image} />}
+          <TextBox as={FormLabel} size='xs' htmlFor='targetInk'>
+            Price
+          </TextBox>
+          <Input
+            name='price'
+            mb={5}
+            ref={register({
+              required: {
+                value: true,
+                message: 'Price is required',
+              },
+            })}
+            focusBorderColor='secondary.500'
+          />
+          <TextBox as={FormLabel} size='xs' htmlFor='tokenId'>
+            Token ID
+          </TextBox>
+          <Input
+            name='tokenId'
+            mb={5}
+            ref={register({
+              required: {
+                value: true,
+                message: 'Id is required',
+              },
+            })}
+            focusBorderColor='secondary.500'
+          />
+          <Button type='submit'>Propose Sell</Button>
+        </form>
+      </GenericModal>
       {minionData && (
       <GenericModal closeOnOverlayClick modalId={minionData.minionAddress}>
         <form onSubmit={handleSubmit(onSubmit)}>
