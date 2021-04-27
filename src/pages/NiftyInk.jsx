@@ -191,6 +191,72 @@ const NiftInk = ({ overview }) => {
     }
   };
 
+  const sendToken = async (values) => {
+    setNftLoading(true);
+    console.log(values);
+
+    const niftyService = NiftyService({
+      tokenAddress: '0xCF964c89f509a8c0Ac36391c5460dF94B91daba5',
+      chainID: daochain,
+    });
+
+    const hexData = await niftyService('safeTransferFromNoop')({
+      tokenId: values.tokenId,
+      destination: values.destination,
+      from: overview.minions[0].minionAddress,
+    });
+
+    const details = detailsToJSON({
+      title: `${minionData.details} Sends a Nifty`,
+      description: `Send NFT to ${values.destination}`,
+      // link: nftImage || null,
+      type: 'niftyInk',
+    });
+    const args = [
+      '0xCF964c89f509a8c0Ac36391c5460dF94B91daba5',
+      '0',
+      hexData,
+      details,
+    ];
+    try {
+      const poll = createPoll({ action: 'minionProposeAction', cachePoll })({
+        minionAddress: overview.minions[0],
+        createdAt: now,
+        chainID: daochain,
+        actions: {
+          onError: (error, txHash) => {
+            errorToast({
+              title: 'There was an error.',
+            });
+            resolvePoll(txHash);
+            console.error(`Could not find a matching proposal: ${error}`);
+          },
+          onSuccess: (txHash) => {
+            successToast({
+              title: 'Minion proposal submitted.',
+            });
+            refreshDao();
+            resolvePoll(txHash);
+          },
+        },
+      });
+      const onTxHash = () => {
+        setGenericModal(false);
+        setTxInfoModal(true);
+      };
+      await MinionService({
+        web3: injectedProvider,
+        minion,
+        chainID: daochain,
+      })('proposeAction')({
+        args, address, poll, onTxHash,
+      });
+    } catch (err) {
+      setNftLoading(false);
+      console.log('error: ', err);
+    }
+  };
+
   const sellToken = async (values) => {
     setNftLoading(true);
     console.log(values);
@@ -336,6 +402,11 @@ const NiftInk = ({ overview }) => {
     }
   };
 
+  const action = {
+    sell: () => setGenericModal({ niftySell: true }),
+    send: () => setGenericModal({ niftySend: true }),
+  };
+
   return (
     <MainViewLayout header='Minion' isDao>
       <Box>
@@ -407,7 +478,7 @@ const NiftInk = ({ overview }) => {
                       <MinionTokenList
                         tokens={contractBalances}
                         boost='NiftyInk'
-                        action={() => setGenericModal({ niftySell: true })}
+                        action={action}
                       />
                     )}
                   </Box>
@@ -426,6 +497,40 @@ const NiftInk = ({ overview }) => {
           )}
         </ContentBox>
       </Box>
+      <GenericModal closeOnOverlayClick modalId='niftySend'>
+        <form onSubmit={handleSubmit(sendToken)}>
+          {nftMeta && <Image src={nftMeta?.image} />}
+          <TextBox as={FormLabel} size='xs' htmlFor='destination'>
+            Destination
+          </TextBox>
+          <Input
+            name='destination'
+            mb={5}
+            ref={register({
+              required: {
+                value: true,
+                message: 'destination is required',
+              },
+            })}
+            focusBorderColor='secondary.500'
+          />
+          <TextBox as={FormLabel} size='xs' htmlFor='tokenId'>
+            Token ID
+          </TextBox>
+          <Input
+            name='tokenId'
+            mb={5}
+            ref={register({
+              required: {
+                value: true,
+                message: 'Id is required',
+              },
+            })}
+            focusBorderColor='secondary.500'
+          />
+          <Button type='submit'>Propose Transfer</Button>
+        </form>
+      </GenericModal>
       <GenericModal closeOnOverlayClick modalId='niftySell'>
         <form onSubmit={handleSubmit(sellToken)}>
           {nftMeta && <Image src={nftMeta?.image} />}

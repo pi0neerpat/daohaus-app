@@ -21,6 +21,7 @@ const MinionTokenList = ({ tokens, boost, action }) => {
           <TextBox size='xs'>Value</TextBox>
         </Box>
       </Flex>
+
       {tokens ? (
         tokens
           .sort((a, b) => b.balance - a.balance)
@@ -34,6 +35,7 @@ const MinionTokenList = ({ tokens, boost, action }) => {
           No unclaimed balances
         </Text>
       )}
+
     </ContentBox>
   );
 };

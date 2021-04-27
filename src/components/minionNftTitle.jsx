@@ -31,7 +31,7 @@ const MinionNftTile = ({
   }, []);
 
   return (
-    <Box m={6} d={['none', null, null, 'inline-block']} bg='#E2E8F0'>
+    <Box m={6} d={['none', null, null, 'inline-block']} bg='white'>
       {tokenDetail?.image || tokenDetail?.properties?.image ? (
         <Tooltip
           hasArrow
@@ -47,8 +47,8 @@ const MinionNftTile = ({
       )}
       {boost ? (
         <Flex>
-          <Button onClick={() => action()}>Sell</Button>
-          <Button onClick={() => action()}>Send</Button>
+          <Button onClick={() => action.sell()}>Sell</Button>
+          <Button onClick={() => action.send()}>Send</Button>
         </Flex>
       ) : null}
     </Box>

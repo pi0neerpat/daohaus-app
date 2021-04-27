@@ -92,7 +92,7 @@ const MinionTokenListCard = ({ token, boost, action }) => {
         </Box>
       </Flex>
       {token?.type === 'ERC-721' && (
-        <Flex>
+        <Flex flexWrap='wrap'>
           {token.tokenURIs
             && token.tokenURIs.map((meta, idx) => (
               <MinionNftTile

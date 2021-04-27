@@ -81,11 +81,6 @@ export const NiftyService = ({
       };
     }
     if (service === 'setTokenPriceNoop') {
-      console.log('setTokenPriceNoopsetTokenPriceNoopsetTokenPriceNoop');
-      console.log('setTokenPriceNoopsetTokenPriceNoopsetTokenPriceNoop');
-      console.log('setTokenPriceNoopsetTokenPriceNoopsetTokenPriceNoop');
-      console.log('setTokenPriceNoopsetTokenPriceNoopsetTokenPriceNoop');
-      console.log('setTokenPriceNoopsetTokenPriceNoopsetTokenPriceNoop');
       return async ({ tokenId, price }) => {
         try {
           console.log('tokenId, price', tokenId, price);
@@ -98,6 +93,20 @@ export const NiftyService = ({
         return null;
       };
     }
+    if (service === 'safeTransferFromNoop') {
+      return async ({ tokenId, destination, from }) => {
+        console.log('safeTransferFromNoop w f', tokenId, destination, from);
+        try {
+          const hex = contract.methods.safeTransferFrom(from, destination, +tokenId).encodeABI();
+          console.log('hex', hex);
+          return hex;
+        } catch (error) {
+          console.error('>>>>>>>encode ERR:', error);
+        }
+        return null;
+      };
+    }
+
     return null;
   };
 };
