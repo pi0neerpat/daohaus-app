@@ -27,6 +27,10 @@ export const supportedChains = {
     wrapper_contract: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     wrap_n_zap_factory_addr: '0x',
     block_explorer: 'https://etherscan.io',
+    niftyMinion: {
+      minion_factory_addr: '0xE622e6C7376F3b96bF00a88DEF01cc6c2c83F6D5',
+      version: 'v1',
+    },
   },
   '0x4': {
     name: 'Ethereum Rinkeby',
