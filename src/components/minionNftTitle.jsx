@@ -20,6 +20,7 @@ import { hasMinion } from '../utils/dao';
 import { getNftMeta } from '../utils/metadata';
 import { NIFTYINK_ADDRESS } from '../services/niftyService';
 import { MINION_TYPES } from '../utils/proposalUtils';
+import { MCNFT_ADDRESS } from '../services/nftSaleService';
 
 const MinionNftTile = ({
   meta,
@@ -76,6 +77,11 @@ const MinionNftTile = ({
     const key = `sell-${tokenId}`;
     setGenericModal({ [key]: true });
   };
+  const handleBuy = async () => {
+    console.log('tokenDetail', tokenDetail);
+    const key = `buy-${tokenId}`;
+    setGenericModal({ [key]: true });
+  };
 
   const sendToken = values => {
     sendErc721Action(values, token, tokenId);
@@ -107,6 +113,10 @@ const MinionNftTile = ({
         {hasMinion(daoOverview.minions, MINION_TYPES.NIFTY) &&
           token.contractAddress === NIFTYINK_ADDRESS && (
             <Button onClick={handleSell}>Sell on Nifty Ink</Button>
+          )}
+        {hasMinion(daoOverview.minions, MINION_TYPES.NIFTY) &&
+          token.contractAddress === MCNFT_ADDRESS && (
+            <Button onClick={handleBuy}>Buy nft</Button>
           )}
         <Button onClick={handleSend}>Send</Button>
       </Flex>
