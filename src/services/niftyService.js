@@ -69,12 +69,6 @@ export const NiftyService = ({
       };
     }
     if (service === 'buyInkNoop') {
-      console.log(
-        '????????? contract.methods.buyInk',
-        contract.methods
-          .buyInk('QmS2J1v12ijHBjfkRp5nNAW6RjZdi8uLtfivCjcNFcJWWT')
-          .encodeABI(),
-      );
       return async ({ inkUrl }) => {
         try {
           console.log('inkUrl', inkUrl);

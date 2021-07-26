@@ -37,6 +37,7 @@ import { useTX } from '../contexts/TXContext';
 import { TokenService } from '../services/tokenService';
 import MinionNativeToken from '../components/minionNativeToken';
 import { NiftyService } from '../services/niftyService';
+import { NftSaleService } from '../services/nftSaleService';
 
 const MinionDetails = ({
   overview,
@@ -284,6 +285,60 @@ const MinionDetails = ({
     submitMinion(args);
   };
 
+  const sellNftOnDHAction = async (values, token, tokenId) => {
+    setLoading(true);
+
+    console.log(values);
+
+    const niftyService = NftSaleService({
+      tokenAddress: token.contractAddress,
+      chainID: daochain,
+    });
+
+    const priceInWei = injectedProvider.utils.toWei(values.price);
+    console.log('priceInWei', {
+      tokenId,
+      nftAddress: token.contractAddress,
+      price: priceInWei,
+      token: values.token,
+      altRec: values.altRec,
+      // details: values.details,
+    });
+    const hexData = await niftyService('setNewOrderNoop')({
+      tokenId,
+      nftAddress: token.contractAddress,
+      price: priceInWei,
+      token: values.token,
+      altRec: values.altRec,
+      // details: values.details,
+    });
+
+    const details = detailsToJSON({
+      title: values.title,
+      description: values.details,
+      // link: nftImage || null,
+      type: 'nftDhSale',
+    });
+    console.log(hexData);
+    const args = [token.contractAddress, '0', hexData, details];
+    submitMinion(args);
+  };
+
+  const getNftOrder = async (token, tokenId) => {
+    setLoading(true);
+
+    const nftSaleService = NftSaleService({
+      tokenAddress: token.contractAddress,
+      chainID: daochain,
+    });
+    console.log('?????????/', token, token.contractAddress, tokenId);
+    const orderDetail = await nftSaleService('orders')({
+      tokenId,
+    });
+
+    console.log('orderDetail', orderDetail);
+  };
+
   return (
     <MainViewLayout header={minionType || 'Minion'} isDao>
       <Box>
@@ -366,6 +421,8 @@ const MinionDetails = ({
                       sendErc20Action={sendErc20Action}
                       sendErc721Action={sendErc721Action}
                       sellNiftyAction={sellNiftyAction}
+                      getNftOrder={getNftOrder}
+                      sellNftOnDHAction={sellNftOnDHAction}
                       isMember={isMember}
                     />
                   </Box>

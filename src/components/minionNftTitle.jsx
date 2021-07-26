@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 
+import { useParams } from 'react-router-dom';
 import { useDao } from '../contexts/DaoContext';
 import { useOverlay } from '../contexts/OverlayContext';
 import TextBox from './TextBox';
@@ -20,7 +21,7 @@ import { hasMinion } from '../utils/dao';
 import { getNftMeta } from '../utils/metadata';
 import { NIFTYINK_ADDRESS } from '../services/niftyService';
 import { MINION_TYPES } from '../utils/proposalUtils';
-import { MCNFT_ADDRESS } from '../services/nftSaleService';
+import { supportedChains } from '../utils/chain';
 
 const MinionNftTile = ({
   meta,
@@ -28,13 +29,16 @@ const MinionNftTile = ({
   token,
   sendErc721Action,
   sellNiftyAction,
+  getNftOrder,
+  sellNftOnDHAction,
 }) => {
   const { daoOverview } = useDao();
   const { setGenericModal } = useOverlay();
   const { handleSubmit, register } = useForm();
+  const { daochain } = useParams();
 
   const [tokenDetail, setTokenDetail] = useState();
-
+  console.log(token);
   useEffect(() => {
     const fetchNFTData = async () => {
       console.log('meta', meta);
@@ -77,9 +81,21 @@ const MinionNftTile = ({
     const key = `sell-${tokenId}`;
     setGenericModal({ [key]: true });
   };
+  const handleDHSell = async () => {
+    console.log('tokenDetail', tokenDetail);
+    const key = `dhSell-${tokenId}`;
+    setGenericModal({ [key]: true });
+  };
   const handleBuy = async () => {
     console.log('tokenDetail', tokenDetail);
     const key = `buy-${tokenId}`;
+    setGenericModal({ [key]: true });
+  };
+  const handleDetail = async () => {
+    console.log('tokenDetail??', token);
+    const key = `detail-${tokenId}`;
+    const orderDetail = await getNftOrder(token, tokenId);
+    console.log('orderDetail', orderDetail);
     setGenericModal({ [key]: true });
   };
 
@@ -89,6 +105,10 @@ const MinionNftTile = ({
 
   const sellToken = values => {
     sellNiftyAction(values, token, tokenId);
+  };
+
+  const sellTokenOnDh = values => {
+    sellNftOnDHAction(values, token, tokenId);
   };
 
   return (
@@ -110,16 +130,29 @@ const MinionNftTile = ({
       )}
 
       <Flex>
+        <Button onClick={handleDetail}>Detail</Button>
+      </Flex>
+
+      <GenericModal closeOnOverlayClick modalId={`detail-${tokenId}`}>
+        <Text mb={3} fontFamily='heading'>
+          NFT Detail
+        </Text>
+        <Image src={tokenDetail?.image} backgroundColor='white' />
         {hasMinion(daoOverview.minions, MINION_TYPES.NIFTY) &&
           token.contractAddress === NIFTYINK_ADDRESS && (
             <Button onClick={handleSell}>Sell on Nifty Ink</Button>
           )}
         {hasMinion(daoOverview.minions, MINION_TYPES.NIFTY) &&
-          token.contractAddress === MCNFT_ADDRESS && (
+          supportedChains[daochain].daohaus_nft_whitelist.indexOf(
+            token.contractAddress,
+          ) > -1 && <Button onClick={handleDHSell}>Sell on Daohaus</Button>}
+        {hasMinion(daoOverview.minions, MINION_TYPES.NIFTY) &&
+          token.contractAddress ===
+            supportedChains[daochain].daohaus_nft_market && (
             <Button onClick={handleBuy}>Buy nft</Button>
           )}
         <Button onClick={handleSend}>Send</Button>
-      </Flex>
+      </GenericModal>
 
       <GenericModal closeOnOverlayClick modalId={`send-${tokenId}`}>
         <Text mb={3} fontFamily='heading'>
@@ -160,6 +193,90 @@ const MinionNftTile = ({
             disabled={tokenId}
           />
           <Button type='submit'>Propose Transfer</Button>
+        </form>
+      </GenericModal>
+
+      <GenericModal closeOnOverlayClick modalId={`dhSell-${tokenId}`}>
+        <Text mb={3} fontFamily='heading'>
+          Sell on Daohaus NFT Market
+        </Text>
+        <form onSubmit={handleSubmit(sellTokenOnDh)}>
+          {tokenDetail && (
+            <Image src={tokenDetail?.image} backgroundColor='white' />
+          )}
+          <TextBox as={FormLabel} size='xs' htmlFor='title'>
+            Title
+          </TextBox>
+          <Input
+            name='title'
+            mb={5}
+            ref={register({
+              required: {
+                value: true,
+                message: 'Id is required',
+              },
+            })}
+            focusBorderColor='secondary.500'
+          />
+          <TextBox as={FormLabel} size='xs' htmlFor='details'>
+            Details
+          </TextBox>
+          <Input
+            name='details'
+            mb={5}
+            ref={register({
+              required: {
+                value: true,
+                message: 'Id is required',
+              },
+            })}
+            focusBorderColor='secondary.500'
+          />
+          <TextBox as={FormLabel} size='xs' htmlFor='targetInk'>
+            Price
+          </TextBox>
+          <Input
+            name='price'
+            mb={5}
+            ref={register({
+              required: {
+                value: true,
+                message: 'Price is required',
+              },
+            })}
+            focusBorderColor='secondary.500'
+          />
+          <TextBox as={FormLabel} size='xs' htmlFor='tokenId'>
+            Token
+          </TextBox>
+          <Input
+            name='token'
+            mb={5}
+            ref={register({
+              required: {
+                value: true,
+                message: 'Id is required',
+              },
+            })}
+            focusBorderColor='secondary.500'
+            defaultValue='0xb0C5f3100A4d9d9532a4CfD68c55F1AE8da987Eb'
+          />
+          <TextBox as={FormLabel} size='xs' htmlFor='altRec'>
+            Alternate payment Reciever
+          </TextBox>
+          <Input
+            name='altRec'
+            mb={5}
+            ref={register({
+              required: {
+                value: true,
+                message: 'Id is required',
+              },
+            })}
+            focusBorderColor='secondary.500'
+          />
+          <TextBox>10% fee to Uberhaus</TextBox>
+          <Button type='submit'>Create Sell Order</Button>
         </form>
       </GenericModal>
 

@@ -14,6 +14,8 @@ const MinionTokenList = ({
   sendErc20Action,
   sendErc721Action,
   sellNiftyAction,
+  getNftOrder,
+  sellNftOnDHAction,
   boost,
   isMember,
 }) => {
@@ -69,6 +71,8 @@ const MinionTokenList = ({
               sendErc20Action={sendErc20Action}
               sendErc721Action={sendErc721Action}
               sellNiftyAction={sellNiftyAction}
+              getNftOrder={getNftOrder}
+              sellNftOnDHAction={sellNftOnDHAction}
               boost={boost}
               isMember={isMember}
             />

@@ -140,6 +140,8 @@ export const supportedChains = {
       minion_factory_addr: '0xA6B75C3EBfA5a5F801F634812ABCb6Fd7055fd6d',
       version: 'v1',
     },
+    daohaus_nft_market: '0x0D0217FB49A71A631251b0796EF0e595B0B6d622',
+    daohaus_nft_whitelist: ['0x938f6dec7f5bd987c5196693c88a2f541cb90b01'],
   },
   '0x89': {
     name: 'Matic',

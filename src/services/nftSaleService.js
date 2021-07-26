@@ -4,10 +4,7 @@ import NFTSaleAbi from '../contracts/niftySale.json';
 
 import { chainByID } from '../utils/chain';
 
-// xdai
-export const MCNFT_ADDRESS = '0x938f6dEC7f5bd987C5196693c88A2f541CB90b01';
-
-export const NiftyService = ({
+export const NftSaleService = ({
   web3,
   chainID,
   tokenAddress,
@@ -18,15 +15,56 @@ export const NiftyService = ({
     web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl));
   }
   const abi = NFTSaleAbi;
-  const contract = new web3.eth.Contract(abi, tokenAddress);
+  const contract = new web3.eth.Contract(
+    abi,
+    '0x0D0217FB49A71A631251b0796EF0e595B0B6d622', // xdai NFT sale contract
+  );
   return service => {
-    if (service === 'tokenOfOwnerByIndex') {
-      return async ({ accountAddr, index }) => {
+    if (service === 'orders') {
+      return async ({ tokenId }) => {
         try {
-          const tokenOfOwnerByIndex = await contract.methods
-            .tokenOfOwnerByIndex(accountAddr, index)
+          const saleOrder = await contract.methods
+            .orders(tokenAddress, tokenId)
             .call();
-          return tokenOfOwnerByIndex;
+          console.log('saleOrder', saleOrder);
+          return saleOrder;
+        } catch (error) {
+          console.error('ERR:', error);
+        }
+        return null;
+      };
+    }
+    // uint256 _tokenId,
+    // address _nftAddress,
+    // uint256 _price,
+    // address _token,
+    // address _alternateReceiver,
+    // string memory details
+    if (service === 'setNewOrderNoop') {
+      console.log('setNewOrderNoop');
+      return async ({ tokenId, nftAddress, price, token, altRec }) => {
+        console.log('?????????????/', contract.methods);
+        try {
+          const newSaleOrderHex = await contract.methods
+            .setNewOrder(tokenId, nftAddress, price, token, altRec)
+            .encodeABI();
+          return newSaleOrderHex;
+        } catch (error) {
+          console.error('ERR:', error);
+        }
+        return null;
+      };
+    }
+    if (service === 'fillOrder') {
+      return async ({ tokenId }) => {
+        console.log('contract.methods', contract.methods);
+        console.log('tokenAddress, tokenId', tokenAddress, tokenId);
+        try {
+          const saleOrder = await contract.methods
+            .orders(tokenAddress, tokenId)
+            .call();
+          console.log('saleOrder', saleOrder);
+          return saleOrder;
         } catch (error) {
           console.error('ERR:', error);
         }

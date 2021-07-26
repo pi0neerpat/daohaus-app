@@ -1,24 +1,5 @@
 [
-  {
-    "type": "constructor",
-    "stateMutability": "nonpayable",
-    "inputs": [
-      { "type": "address", "name": "_nftContract", "internalType": "address" }
-    ]
-  },
-  {
-    "type": "event",
-    "name": "AddToken",
-    "inputs": [
-      {
-        "type": "address",
-        "name": "token",
-        "internalType": "address",
-        "indexed": true
-      }
-    ],
-    "anonymous": false
-  },
+  { "type": "constructor", "stateMutability": "nonpayable", "inputs": [] },
   {
     "type": "event",
     "name": "FillOrder",
@@ -33,6 +14,12 @@
         "type": "uint256",
         "name": "tokenId",
         "internalType": "uint256",
+        "indexed": false
+      },
+      {
+        "type": "address",
+        "name": "nftAddress",
+        "internalType": "address",
         "indexed": false
       },
       {
@@ -77,14 +64,27 @@
   },
   {
     "type": "event",
-    "name": "SetOrder",
+    "name": "SetNft",
     "inputs": [
       {
-        "type": "uint256",
-        "name": "orderId",
-        "internalType": "uint256",
-        "indexed": false
+        "type": "address",
+        "name": "nft",
+        "internalType": "address",
+        "indexed": true
       },
+      {
+        "type": "bool",
+        "name": "active",
+        "internalType": "bool",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SetOrder",
+    "inputs": [
       {
         "type": "address",
         "name": "seller",
@@ -111,12 +111,44 @@
       },
       {
         "type": "address",
+        "name": "nftAddress",
+        "internalType": "address",
+        "indexed": false
+      },
+      {
+        "type": "address",
         "name": "altReceiver",
         "internalType": "address",
         "indexed": false
       }
     ],
     "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SetToken",
+    "inputs": [
+      {
+        "type": "address",
+        "name": "token",
+        "internalType": "address",
+        "indexed": true
+      },
+      {
+        "type": "bool",
+        "name": "active",
+        "internalType": "bool",
+        "indexed": false
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "function",
+    "stateMutability": "view",
+    "outputs": [{ "type": "bool", "name": "", "internalType": "bool" }],
+    "name": "Nfts",
+    "inputs": [{ "type": "address", "name": "", "internalType": "address" }]
   },
   {
     "type": "function",
@@ -127,29 +159,12 @@
   },
   {
     "type": "function",
-    "stateMutability": "view",
-    "outputs": [
-      { "type": "uint256", "name": "_value", "internalType": "uint256" }
-    ],
-    "name": "_orderCounter",
-    "inputs": []
-  },
-  {
-    "type": "function",
-    "stateMutability": "nonpayable",
-    "outputs": [],
-    "name": "addToken",
-    "inputs": [
-      { "type": "address", "name": "token", "internalType": "address" }
-    ]
-  },
-  {
-    "type": "function",
     "stateMutability": "nonpayable",
     "outputs": [],
     "name": "closeOrder",
     "inputs": [
-      { "type": "uint256", "name": "_orderId", "internalType": "uint256" }
+      { "type": "uint256", "name": "_tokenId", "internalType": "uint256" },
+      { "type": "address", "name": "_nftAddress", "internalType": "address" }
     ]
   },
   {
@@ -165,17 +180,9 @@
     "outputs": [],
     "name": "fillOrder",
     "inputs": [
-      { "type": "uint256", "name": "_orderId", "internalType": "uint256" }
+      { "type": "uint256", "name": "_tokenId", "internalType": "uint256" },
+      { "type": "address", "name": "_nftAddress", "internalType": "address" }
     ]
-  },
-  {
-    "type": "function",
-    "stateMutability": "view",
-    "outputs": [
-      { "type": "address", "name": "", "internalType": "contract ERC721" }
-    ],
-    "name": "nftContract",
-    "inputs": []
   },
   {
     "type": "function",
@@ -186,6 +193,7 @@
       { "type": "uint256", "name": "price", "internalType": "uint256" },
       { "type": "address", "name": "saleToken", "internalType": "address" },
       { "type": "uint256", "name": "tokenId", "internalType": "uint256" },
+      { "type": "address", "name": "nftAddress", "internalType": "address" },
       { "type": "address", "name": "seller", "internalType": "address" },
       {
         "type": "address",
@@ -194,7 +202,10 @@
       }
     ],
     "name": "orders",
-    "inputs": [{ "type": "uint256", "name": "", "internalType": "uint256" }]
+    "inputs": [
+      { "type": "address", "name": "", "internalType": "address" },
+      { "type": "uint256", "name": "", "internalType": "uint256" }
+    ]
   },
   {
     "type": "function",
@@ -217,6 +228,7 @@
     "name": "setNewOrder",
     "inputs": [
       { "type": "uint256", "name": "_tokenId", "internalType": "uint256" },
+      { "type": "address", "name": "_nftAddress", "internalType": "address" },
       { "type": "uint256", "name": "_price", "internalType": "uint256" },
       { "type": "address", "name": "_token", "internalType": "address" },
       {
@@ -224,6 +236,26 @@
         "name": "_alternateReceiver",
         "internalType": "address"
       }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "setdNft",
+    "inputs": [
+      { "type": "address", "name": "_nft", "internalType": "address" },
+      { "type": "bool", "name": "_active", "internalType": "bool" }
+    ]
+  },
+  {
+    "type": "function",
+    "stateMutability": "nonpayable",
+    "outputs": [],
+    "name": "setdToken",
+    "inputs": [
+      { "type": "address", "name": "_token", "internalType": "address" },
+      { "type": "bool", "name": "_active", "internalType": "bool" }
     ]
   },
   {

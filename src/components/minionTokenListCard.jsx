@@ -26,6 +26,8 @@ const MinionTokenListCard = ({
   sendErc20Action,
   sendErc721Action,
   sellNiftyAction,
+  getNftOrder,
+  sellNftOnDHAction,
   boost,
   isMember,
 }) => {
@@ -152,6 +154,8 @@ const MinionTokenListCard = ({
                 boost={boost}
                 sendErc721Action={sendErc721Action}
                 sellNiftyAction={sellNiftyAction}
+                getNftOrder={getNftOrder}
+                sellNftOnDHAction={sellNftOnDHAction}
               />
             ))}
         </Flex>
