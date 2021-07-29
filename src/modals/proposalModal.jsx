@@ -78,13 +78,24 @@ const ProposalFormModal = ({ proposalType }) => {
       heading: `New Minion ${getTerm(customTerms, 'proposal')}`,
       subline: 'Submit a Minion proposal here.',
       form: <MinionProposalForm />,
-      // form: <ProposalForm {...FORM.MINION} />,
+      // form: <FormBuilder {...FORM.MINION} />,
     },
     niftyMinion: {
-      type: `New ${getTerm(customTerms, 'proposal')}`,
-      heading: `New Minion ${getTerm(customTerms, 'proposal')}`,
-      subline: 'Submit a Minion proposal here.',
+      // type: `New ${getTerm(customTerms, 'proposal')}`,
+      // subline: 'Submit a Minion proposal here.',
+      heading: `Nifty Ink Purchase ${getTerm(customTerms, 'proposal')}`,
       form: <NiftyProposalForm />,
+      // form: (
+      //   <FormBuilder
+      //     {...FORM.MINION_NIFTY_INK}
+      //     localValues={{
+      //       tokenAddress: '0x0',
+      //       minionAddress: '0x0',
+      //       balance: '10000',
+      //       tokenDecimals: '18',
+      //     }}
+      // />
+      // ),
     },
     superfluidMinion: {
       type: `New ${getTerm(customTerms, 'proposal')}`,

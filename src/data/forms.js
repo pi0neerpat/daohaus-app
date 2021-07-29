@@ -185,4 +185,16 @@ export const FORM = {
     tx: TX.MINION_NIFTY_SET_PRICE,
     fields: [FIELD.NFT_PRICE, FIELD.DESCRIPTION],
   },
+  MINION_NIFTY_INK: {
+    title: 'Buy A Nifty Ink Proposal',
+    subtitle: 'Make a proposal to purchase an nft from your nifty minion',
+    type: PROPOSAL_TYPES.MINION_NIFTY,
+    required: ['selectedMinion', 'link', 'minionPayment'], // Use name key from proposal type object
+    minionType: MINION_TYPES.NIFTY,
+    tx: TX.MINION_PROPOSE_ACTION,
+    fields: [FIELD.MINION_SELECT, FIELD.NIFTY_INK_LINK, FIELD.MINION_PAYMENT],
+  },
 };
+// TODO: special field for this minion payment - message about money comes from treasury
+// - maybe 2 inputs - repayment from treasury - could be anything
+// - then one that gets price of nifty

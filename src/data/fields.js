@@ -136,7 +136,6 @@ export const FIELD = {
     htmlFor: 'selectedMinion',
     placeholder: 'Choose a DAO minion',
     expectType: 'address',
-    minionType: MINION_TYPES.VANILLA,
   },
   ABI_INPUT: {
     type: 'abiInput',
@@ -180,6 +179,25 @@ export const FIELD = {
     info: INFO_TEXT.NFT_PRICE,
     expectType: 'number',
     modifiers: ['addWeiDecimals'],
+  },
+  NIFTY_INK_LINK: {
+    type: 'niftyInkLinkInput',
+    label: 'Link',
+    name: 'link',
+    htmlFor: 'link',
+    placeholder: 'nifty.ink',
+    expectType: 'urlNoHTTP',
+  },
+  NIFTY_INK_MINION_PAYMENT: {
+    type: 'minionPayment',
+    htmlFor: 'minionPayment',
+    name: 'minionPayment',
+    selectName: 'minionToken',
+    placeholder: '0',
+    label: 'Minion Payment',
+    info: INFO_TEXT.MINION_PAYMENT,
+    expectType: 'number',
+    modifiers: ['addMinionVaultDecimals'],
   },
 };
 

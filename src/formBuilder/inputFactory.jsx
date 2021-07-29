@@ -63,5 +63,8 @@ export const InputFactory = props => {
   if (type === 'lootGrabDisplay') {
     return <LootGrabDisplay {...props} />;
   }
+  if (type === 'niftyInkLinkInput') {
+    return <LinkInput {...props} />;
+  }
   return null;
 };
