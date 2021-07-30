@@ -183,6 +183,19 @@ export const boostList = [
       '0x89': true,
     },
   },
+  {
+    name: 'Farm Launcher',
+    key: 'farmLauncher',
+    description: 'Provide rewards for staking LP tokens, signaling, and more.',
+    price: '1',
+    modalName: 'farmLauncher',
+    successRoute: '',
+    link: 'farmlauncher',
+    settings: true,
+    networks: {
+      all: true,
+    },
+  },
 ];
 
 export const notificationBoostContent = {
